@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'txt-files/9_灰饰.txt',
         'txt-files/10_罪司.txt',
         'txt-files/11_埋寂.txt',
-        'txt-files/12_颜文字.txt',
+        'txt-files/12_「≥uO」.txt',
         'txt-files/13_远笛.txt'
     ];
 
