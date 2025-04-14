@@ -45,7 +45,7 @@ async function loadAllFiles() {
         );
 
         fileContents = await Promise.all(promises);
-        resultsContainer.innerHTML = '<div class="no-results">皮肤 配饰 动作 表情 头像框 气泡框 载具 玩具 <p>多个关键词请用一个空格隔开</div>';
+        resultsContainer.innerHTML = '<div class="no-results">参考关键词（不用按顺序）：皮肤 配饰 动作 表情 头像框 气泡框 载具 玩具 <p>同时包含多个关键词请用一个空格隔开</div>';
     } catch (error) {
         console.error('加载文件时出错:', error);
         resultsContainer.innerHTML = '<div class="no-results">加载文件时出错，请检查控制台</div>';
@@ -65,7 +65,7 @@ function searchText(query) {
 
     // 处理空查询
     if (!query || !query.trim()) {
-        resultsContainer.innerHTML = '<div class="no-results">皮肤 配饰 动作 表情 头像框 气泡框 载具 玩具 <p>多个关键词请用一个空格隔开</div>';
+        resultsContainer.innerHTML = '<div class="no-results">参考关键词（不用按顺序）：皮肤 配饰 动作 表情 头像框 气泡框 载具 玩具 <p>同时包含多个关键词请用一个空格隔开</div>';
         return;
     }
 
