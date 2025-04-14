@@ -102,13 +102,12 @@ function searchText(query) {
                 allMatchedWords.push(...matches);
             });
 
-            // 去重
-            const uniqueMatches = [...new Set(allMatchedWords)];
+
 
             // 添加到结果中
             results.push({
                 filename: txtFiles[index].split('/').pop().replace('.txt', ''),
-                matches: uniqueMatches
+                matches: allMatchedWords
             });
 
         } catch (e) {
