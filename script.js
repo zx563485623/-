@@ -65,7 +65,7 @@ function searchText(query) {
 
     // 处理空查询
     if (!query || !query.trim()) {
-        resultsContainer.innerHTML = '<div class="no-results">输入搜索词以查看结果</div>';
+        resultsContainer.innerHTML = '<div class="no-results">输入搜索词以查看结果，多个关键词请用一个空格隔开</div>';
         return;
     }
 
