@@ -16,22 +16,22 @@ const txtFiles = [
     'txt-files/13_远笛.txt'
 ];
 
-// 存储所有文件内容的数组
+// 存储所有文件内容
 let fileContents = [];
 
 // 加载所有文本文件
 async function loadAllFiles() {
     const resultsContainer = document.getElementById('results');
     if (!resultsContainer) {
-        console.error('结果容器元素未找到');
+        console.error('Results container not found');
         return;
     }
 
     resultsContainer.innerHTML = '<div class="loading">正在加载文件...</div>';
 
     try {
-        const promises = txtFiles.map(file => {
-            return fetch(file)
+        const promises = txtFiles.map(file =>
+            fetch(file)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`无法加载文件: ${file}`);
@@ -41,16 +41,14 @@ async function loadAllFiles() {
                 .catch(error => {
                     console.error(error);
                     return `无法加载文件: ${file}`;
-                });
-        });
+                })
+        );
 
         fileContents = await Promise.all(promises);
         resultsContainer.innerHTML = '<div class="no-results">输入搜索词以查看结果</div>';
     } catch (error) {
         console.error('加载文件时出错:', error);
-        if (resultsContainer) {
-            resultsContainer.innerHTML = '<div class="no-results">加载文件时出错，请检查控制台</div>';
-        }
+        resultsContainer.innerHTML = '<div class="no-results">加载文件时出错，请检查控制台</div>';
     }
 }
 
@@ -58,40 +56,67 @@ async function loadAllFiles() {
 function searchText(query) {
     const resultsContainer = document.getElementById('results');
     if (!resultsContainer) {
-        console.error('结果容器元素未找到');
+        console.error('Results container not found');
         return;
     }
 
+    // 显示搜索中状态
+    resultsContainer.innerHTML = '<div class="loading">搜索中...</div>';
+
+    // 处理空查询
     if (!query || !query.trim()) {
         resultsContainer.innerHTML = '<div class="no-results">输入搜索词以查看结果</div>';
         return;
     }
 
+    // 分割查询为多个词语（按空格分割，过滤空字符串）
+    const searchTerms = query.trim().split(/\s+/).filter(term => term.length > 0);
+
     const results = [];
 
+    // 遍历所有文件内容
     fileContents.forEach((content, index) => {
         if (!content || typeof content !== 'string') {
             return;
         }
 
         try {
-            // 使用正则表达式查找包含查询词的所有完整词语
-            const regex = new RegExp(`[^\\s]*${escapeRegExp(query)}[^\\s]*`, 'g');
-            const matches = content.match(regex);
+            // 1. 检查是否包含所有搜索词语
+            const containsAllTerms = searchTerms.every(term =>
+                content.includes(term)
+            );
 
-            if (matches && matches.length > 0) {
-                // 去重
-                const uniqueMatches = [...new Set(matches)];
-                results.push({
-                    filename: txtFiles[index].split('/').pop(),
-                    matches: uniqueMatches
-                });
+            // 如果不包含所有搜索词，跳过该文件
+            if (!containsAllTerms) {
+                return;
             }
+
+            // 2. 收集所有匹配的完整词语
+            const allMatchedWords = [];
+
+            // 对每个搜索词，找出文档中包含该词的所有完整词语
+            searchTerms.forEach(term => {
+                // 构建匹配包含搜索词的完整词语的正则表达式
+                const regex = new RegExp(`[^\\s]*${escapeRegExp(term)}[^\\s]*`, 'g');
+                const matches = content.match(regex) || [];
+                allMatchedWords.push(...matches);
+            });
+
+            // 去重
+            const uniqueMatches = [...new Set(allMatchedWords)];
+
+            // 添加到结果中
+            results.push({
+                filename: txtFiles[index].split('/').pop().replace('.txt', ''),
+                matches: uniqueMatches
+            });
+
         } catch (e) {
             console.error(`处理文件 ${txtFiles[index]} 时出错:`, e);
         }
     });
 
+    // 显示最终结果
     displayResults(results);
 }
 
@@ -99,7 +124,7 @@ function searchText(query) {
 function displayResults(results) {
     const resultsContainer = document.getElementById('results');
     if (!resultsContainer) {
-        console.error('结果容器元素未找到');
+        console.error('Results container not found');
         return;
     }
 
@@ -114,11 +139,10 @@ function displayResults(results) {
         if (!result || !result.filename || !result.matches) {
             return;
         }
-        // 修改这里：去掉文件名中的.txt后缀
-        const displayName = result.filename.replace('.txt', '');
+
         html += `
             <div class="result-item">
-                <div class="filename">${escapeHtml(displayName)}</div>
+                <div class="filename">${escapeHtml(result.filename)}</div>
                 <div class="matches">
                     ${result.matches.map(match =>
             `<span class="match">${escapeHtml(match)}</span>`
@@ -138,7 +162,9 @@ function escapeRegExp(string) {
 
 // 辅助函数：转义HTML特殊字符
 function escapeHtml(unsafe) {
-    if (!unsafe) return '';
+    if (!unsafe) {
+        return '';
+    }
     return unsafe.toString()
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -155,8 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // 加载文件
     loadAllFiles();
 
+    // 设置搜索输入事件监听
     const searchInput = document.getElementById('search-input');
     let searchTimeout = null;
 
