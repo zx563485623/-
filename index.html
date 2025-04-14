@@ -6,21 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文本搜索工具</title>
     <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 </head>
 
 <body>
-    <div class="container">
-        <h1>蛋仔衣柜检索</h1>
-        <h5>输入要查询的皮肤/配饰/动作<p>
-                /表情/玩具/坐骑/头像气泡框</h5>
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="输入要搜索的词语...">
-            <button id="search-btn">搜索</button>
-        </div>
-        <div class="results">
-            <h2>搜索结果</h2>
-            <div id="results-container"></div>
-        </div>
+    <h1>文本搜索应用</h1>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="输入要搜索的词语...">
+    </div>
+
+    <div class="results-container" id="results">
+        <div class="no-results">输入搜索词以查看结果</div>
     </div>
     <script src="script.js"></script>
 </body>
