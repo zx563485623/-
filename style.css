@@ -31,7 +31,7 @@
 
         #search-input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #3097dc;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
 
